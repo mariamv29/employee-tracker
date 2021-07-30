@@ -14,8 +14,8 @@ app.use(express.json());
 // app.use('/api', apiRoutes);
 
 // Get all departments
-app.get("/api/department", (req, res) => {
-  const sql = `SELECT * FROM department`;
+app.get("/api/departments", (req, res) => {
+  const sql = `SELECT * FROM departments`;
 
   db.query(sql, (err, rows) => {
     if (err) {
@@ -30,8 +30,8 @@ app.get("/api/department", (req, res) => {
 });
 
 // GET a single department
-app.get("/api/department/:id", (req, res) => {
-  const sql = `SELECT * FROM department WHERE id = ?`;
+app.get("/api/departments/:id", (req, res) => {
+  const sql = `SELECT * FROM departments WHERE id = ?`;
   const params = [req.params.id];
 
   db.query(sql, params, (err, row) => {
@@ -47,8 +47,8 @@ app.get("/api/department/:id", (req, res) => {
 });
 
 // Delete a department
-app.delete("/api/department:id", (req, res) => {
-  const sql = `DELETE FROM department WHERE id = ?`;
+app.delete("/api/departments:id", (req, res) => {
+  const sql = `DELETE FROM departments WHERE id = ?`;
   const params = [req.params.id];
 
   db.query(sql, params, (err, result) => {
@@ -69,14 +69,14 @@ app.delete("/api/department:id", (req, res) => {
 });
 
 // // Create a department
-app.post("/api/department", ({body}, res) => {
+app.post("/api/departments", ({body}, res) => {
   const errors = inputCheck(body, "department_name");
   if (errors) {
     res.status(400).json({ error: errors });
     return;
   }
 
-const sql = `INSERT INTO department (department_name)
+const sql = `INSERT INTO departments (department_name)
   VALUES (?)`;
 const params = [body.department_name];
 
