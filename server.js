@@ -1,9 +1,8 @@
 const express = require("express");
-const db = require('./db/connection');
-// const inputCheck = require('./utils/inputCheck');
+const db = require("./db/connection");
+const inputCheck = require("./untils/inputCheck");
 
 // const apiRoutes = require('./routes/apiRoutes');
-
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -12,8 +11,86 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-
 // app.use('/api', apiRoutes);
+
+// Get all departments
+app.get("/api/department", (req, res) => {
+  const sql = `SELECT * FROM department`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
+
+// GET a single department
+app.get("/api/department/:id", (req, res) => {
+  const sql = `SELECT * FROM department WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: row,
+    });
+  });
+});
+
+// Delete a department
+app.delete("/api/department:id", (req, res) => {
+  const sql = `DELETE FROM department WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.statusMessage(400).json({ error: res.message });
+    } else if (!result.affectedRows) {
+      res.json({
+        message: "Deparment not found",
+      });
+    } else {
+      res.json({
+        message: "deleted",
+        changes: result.affectedRows,
+        id: req.params.id,
+      });
+    }
+  });
+});
+
+// // Create a department
+app.post("/api/department", ({body}, res) => {
+  const errors = inputCheck(body, "department_name");
+  if (errors) {
+    res.status(400).json({ error: errors });
+    return;
+  }
+
+const sql = `INSERT INTO department (department_name)
+  VALUES (?)`;
+const params = [body.department_name];
+
+db.query(sql, params, (err, result) => {
+  if (err) {
+    res.status(400).json({ error: err.message });
+    return;
+  }
+  res.json({
+    message: "success",
+    data: body,
+  });
+});
+});
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {
@@ -21,9 +98,9 @@ app.use((req, res) => {
 });
 
 // Start server after DB connection
-db.connect(err => {
+db.connect((err) => {
   if (err) throw err;
-  console.log('Database connected.');
+  console.log("Database connected.");
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
