@@ -112,8 +112,13 @@ function addEmployee() {
         message: "What is the employee's manager ID",
       },
     ])
-    .then(function (response) {
-      const sql = `(first_name, last_name, role_id, manager_id) VALUES ('${response.firstName}','${response.lastName}','${response.lastName}','${addManagerId}')`;
+    .then(function (data) {
+      const newEmployee= data.firstName;
+      const newEmyee= data.lastName;
+      const nwEmploye= data.addRoleId;
+      const nwElyee= data.addManagerId;
+      const sql = `INSERT INTP employee (first_name, last_name, role_id, manager_id) ;
+      VALUES ('${newEmployee}','${newEmyee}','${nwEmploye}','${nwElyee}')`;
       db.query(sql, function (err, res) {
         console.table(res);
         toDo();
@@ -137,7 +142,9 @@ function updateEmployeeRole() {
       },
     ])
     .then(function (response) {
-      const sql = `UPDATE employee SET role_id =  ('${response.updateRoleId}' WHERE id = ('${response.employeeId})`;
+      const roId= response.updateRoleId;
+      const emId= response.employeeId;
+      const sql = `UPDATE employee SET role_id =  ('${roId}' WHERE id = ('${emId})`;
       db.query(sql, function (err, res) {
         console.table(res);
         toDo();
@@ -160,8 +167,8 @@ function updateEmployeeMan() {
         message: "Please enter the new Manager ID",
       },
     ])
-    .then(function (response) {
-      const sql = `UPDATE employee SET role_id =  ('${response.updateManId}' WHERE id = ('${response.employeeId})`;
+    .then(function (answer) {
+      const sql = `UPDATE employee SET role_id =  ('${answer.updateManId}' WHERE id = ('${answer.employeeId})`;
       db.query(sql, function (err, res) {
         console.table(res);
         toDo();
