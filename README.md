@@ -2,7 +2,7 @@
 
 ## Description 
 
-
+Terminal app that allows user to go through the SQL database by answering inquirer propmt questions. 
 
 
 ![screenshot](./media/screenshot.jpg)
