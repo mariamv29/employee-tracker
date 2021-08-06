@@ -11,7 +11,7 @@ figlet("Hello World!!", function (err, data) {
     return;
   }
   console.log(data);
-  toDo();
+   toDo();
 });
 
 //innquirer prompt questions
@@ -45,6 +45,7 @@ function toDo() {
           break;
         case "Add Employee":
           addEmployee();
+          break;
         case "Update Employee Role":
           updateEmployeeRole();
           break;
@@ -117,10 +118,10 @@ function addEmployee() {
       const newEmyee= data.lastName;
       const nwEmploye= data.addRoleId;
       const nwElyee= data.addManagerId;
-      const sql = `INSERT INTP employee (first_name, last_name, role_id, manager_id) ;
+      const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
       VALUES ('${newEmployee}','${newEmyee}','${nwEmploye}','${nwElyee}')`;
       db.query(sql, function (err, res) {
-        console.table(res);
+        console.table( db.query("SELECT * FROM employee;"));
         toDo();
       });
     });
@@ -183,4 +184,4 @@ function viewRoles() {
   });
 }
 
-toDo();
+ //toDo();
