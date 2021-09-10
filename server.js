@@ -11,7 +11,7 @@ figlet("Hello World!!", function (err, data) {
     return;
   }
   console.log(data);
-   toDo();
+  toDo();
 });
 
 //innquirer prompt questions
@@ -24,12 +24,13 @@ function toDo() {
       choices: [
         "View All Employees",
         "View All Employees By Department",
-        "View All Employees By Manager",
+        "View All Departments",
+        "View All Roles",
         "Add Employee",
         "Remove Employee",
         "Update Employee Role",
         "Update Employee Manager",
-        "View All Roles",
+  
       ],
     })
     .then(function (userInput) {
@@ -40,9 +41,12 @@ function toDo() {
         case "View All Employees By Department":
           viewEmployeesbyDepart();
           break;
-        case "View All Employees By Manager":
-          viewEmployeesbyManager();
+        case "View All Departments":
+          viewDepartments();
           break;
+          case "View All Roles":
+            viewRoles();
+            break;
         case "Add Employee":
           addEmployee();
           break;
@@ -52,9 +56,10 @@ function toDo() {
         case "Update Employee Manager":
           updateEmployeeMan();
           break;
-        case "View All Roles":
-          viewRoles();
+        case "Remove Employee":
+          removeEmployee();
           break;
+      
       }
     });
 }
@@ -79,8 +84,17 @@ function viewEmployeesbyDepart() {
 }
 
 // view employess by manager
-function viewEmployeesbyManager() {
-  const sql = "SELECT * FROM manager";
+function viewDepartments() {
+  const sql = `SELECT * FROM departments`;
+  db.query(sql, function (err, res) {
+    console.table(res);
+    toDo();
+  });
+}
+
+//View all Roles
+function viewRoles() {
+  const sql = "SELECT * FROM name_role";
   db.query(sql, function (err, res) {
     console.table(res);
     toDo();
@@ -114,14 +128,14 @@ function addEmployee() {
       },
     ])
     .then(function (data) {
-      const newEmployee= data.firstName;
-      const newEmyee= data.lastName;
-      const nwEmploye= data.addRoleId;
-      const nwElyee= data.addManagerId;
+      const newEmployee = data.firstName;
+      const newEmyee = data.lastName;
+      const nwEmploye = data.addRoleId;
+      const nwElyee = data.addManagerId;
       const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
       VALUES ('${newEmployee}','${newEmyee}','${nwEmploye}','${nwElyee}')`;
       db.query(sql, function (err, res) {
-        console.table( db.query("SELECT * FROM employee;"));
+        console.table(res);
         toDo();
       });
     });
@@ -143,11 +157,9 @@ function updateEmployeeRole() {
       },
     ])
     .then(function (response) {
-      const roId= response.updateRoleId;
-      const emId= response.employeeId;
-      const sql = `UPDATE employee SET role_id =  ('${roId}' WHERE id = ('${emId})`;
+      const sql = `UPDATE employee SET role_id = ${response.employeeId}' WHERE id = ${response.updateRoleId}`;
       db.query(sql, function (err, res) {
-        console.table(res);
+        console.log(res);
         toDo();
       });
     });
@@ -169,19 +181,28 @@ function updateEmployeeMan() {
       },
     ])
     .then(function (answer) {
-      const sql = `UPDATE employee SET role_id =  ('${answer.updateManId}' WHERE id = ('${answer.employeeId})`;
+      const sql = `UPDATE employee SET role_id =${answer.updateManId} WHERE id = ${answer.employeeId}`;
       db.query(sql, function (err, res) {
         console.table(res);
         toDo();
       });
     });
 }
-//View all Roles
-function viewRoles() {
-  const sql = "SELECT * FROM name_role";
-  db.query(sql, function (err, res) {
-    console.table(res);
-  });
+//remove employee
+function removeEmployee() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "employee",
+        message: "Please enter ID you wish to delete",
+      },
+    ])
+    .then(function (answer) {
+      const sql = `DELETE FROM employee WHERE id = ${answer.employee}`;
+      db.query(sql, function (err, res) {
+        console.table(res);
+        toDo();
+      });
+    });
 }
-
- //toDo();
