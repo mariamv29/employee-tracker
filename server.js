@@ -138,7 +138,7 @@ function addEmployee() {
       });
     });
 }
-
+//add role
 function addRole() {
   inquirer
     .prompt([
@@ -158,12 +158,14 @@ function addRole() {
         message: "Please enter department ID. Please select one from 1-4",
       },
     ])
-    .then(function (res) {
-      const title = res.roleTitle;
-      const salary = res.roleSalary;
-      const department = res.departmentId;
-      const sql = `INSERT INTO name_role (title, salary, department_id) VALUES
-      ('${title}', '${salary}', '${department}')`;
+    .then(function (data) {
+      const title = data.roleTitle;
+      const salary = data.roleSalary;
+      const department = data.departmentId;
+      console.log(title, salary, department);
+      const sql = `INSERT INTO name_role (title, salary, department_id)
+      VALUES ('${title}', ${salary}, ${department})`;
+      console.log(sql)
       db.query(sql, function (err, res) {
         console.table(res);
         toDo();
