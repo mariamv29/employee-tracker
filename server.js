@@ -27,10 +27,9 @@ function toDo() {
         "View All Departments",
         "View All Roles",
         "Add Employee",
+        "Add Role",
         "Remove Employee",
         "Update Employee Role",
-        "Update Employee Manager",
-  
       ],
     })
     .then(function (userInput) {
@@ -44,22 +43,21 @@ function toDo() {
         case "View All Departments":
           viewDepartments();
           break;
-          case "View All Roles":
-            viewRoles();
-            break;
+        case "View All Roles":
+          viewRoles();
+          break;
         case "Add Employee":
           addEmployee();
+          break;
+        case "Add Role":
+          addRole();
           break;
         case "Update Employee Role":
           updateEmployeeRole();
           break;
-        case "Update Employee Manager":
-          updateEmployeeMan();
-          break;
         case "Remove Employee":
           removeEmployee();
           break;
-      
       }
     });
 }
@@ -141,53 +139,62 @@ function addEmployee() {
     });
 }
 
-// update current employee role
-function updateEmployeeRole() {
+function addRole() {
   inquirer
     .prompt([
       {
         type: "input",
-        name: "employeeId",
-        message: "Please enter ID you wish to update",
+        name: "roleTitle",
+        message: "Please enter the new role",
       },
       {
         type: "input",
-        name: "updateRoleId",
-        message: "Please enter the new role ID",
+        name: "roleSalary",
+        message: "Please enter role salary",
+      },
+      {
+        type: "input",
+        name: "departmentId",
+        message: "Please enter department ID. Please select one from 1-4",
       },
     ])
-    .then(function (response) {
-      const sql = `UPDATE employee SET role_id = ${response.employeeId}' WHERE id = ${response.updateRoleId}`;
-      db.query(sql, function (err, res) {
-        console.log(res);
-        toDo();
-      });
-    });
-}
-
-// update current employee role
-function updateEmployeeMan() {
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        name: "employeeId",
-        message: "Please enter ID you wish to update",
-      },
-      {
-        type: "input",
-        name: "updateManId",
-        message: "Please enter the new Manager ID",
-      },
-    ])
-    .then(function (answer) {
-      const sql = `UPDATE employee SET role_id =${answer.updateManId} WHERE id = ${answer.employeeId}`;
+    .then(function (res) {
+      const title = res.roleTitle;
+      const salary = res.roleSalary;
+      const department = res.departmentId;
+      const sql = `INSERT INTO name_role (title, salary, department_id) VALUES
+      ('${title}', '${salary}', '${department}')`;
       db.query(sql, function (err, res) {
         console.table(res);
         toDo();
       });
     });
 }
+
+// update current employee role
+function updateEmployeeRole() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "updateRoleId",
+        message: "Please enter the new role ID",
+      },
+      {
+        type: "input",
+        name: "employeeId",
+        message: "Please enter employee ID you wish to update",
+      },
+    ])
+    .then(function (response) {
+      const sql = `UPDATE employee SET role_id = ${response.updateRoleId} WHERE id = ${response.employeeId}`;
+      db.query(sql, function (err, res) {
+        console.table(res);
+        toDo();
+      });
+    });
+}
+
 //remove employee
 function removeEmployee() {
   inquirer
